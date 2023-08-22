@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 
 import '../models/home_model.dart';
 import '../modules/analysis/analysis_chart.dart';
-import '../modules/analysis/analysis_crawl.dart';
+//import '../modules/analysis/analysis_crawl.dart';
+import '../modules/analysis/analysis_point.dart';
 import '../providers/home_provider.dart';
 
 class AnalysisScreen extends StatefulWidget {
@@ -18,14 +19,12 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   List<PredictedTickerList> pTickerList = [];
   HomeProviders homeProvider = HomeProviders();
 
-
   void _onItemTapped(int index) {
     if (index == 0) Get.toNamed("/home");
     if (index == 1) Get.toNamed("/analysis");
     if (index == 2) Get.toNamed("/perform");
     if (index == 3) Get.toNamed("/users");
   }
-
 
   Future initPredictedTickerList() async {
     pTickerList = await homeProvider.getPredictedTickerList();
@@ -39,9 +38,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
         isLoading = false;
       });
     });
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -65,12 +62,12 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
         ],
         backgroundColor: Color(0xFF292929),
       ),
-
       body: Column(
         children: [
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: pTickerList.map((pTickerList) {
                 return Padding(
                   padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -85,8 +82,9 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                     ),
                     onPressed: () {
                       setState(() {
-                        selectedMenu = pTickerList.ticker; // 메뉴가 선택되면 선택된 메뉴 업데이트
-                        print(selectedMenu);
+                        selectedMenu =
+                            pTickerList.ticker; // 메뉴가 선택되면 선택된 메뉴 업데이트
+                        //print(selectedMenu);
                       });
                     },
                     child: Text(
@@ -94,7 +92,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                       style: TextStyle(
                         fontSize: 18,
                         color: selectedMenu == pTickerList.ticker
-                            ? Color.fromARGB(255, 230, 230, 230) // 선택된 메뉴는 파란색으로 표시
+                            ? Color.fromARGB(
+                                255, 230, 230, 230) // 선택된 메뉴는 파란색으로 표시
                             : Color.fromARGB(255, 80, 80, 80),
                       ),
                     ),
@@ -113,173 +112,185 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                         // SUB layer-01 (title : AI indexing, company name)
                         if (index == 0) {
                           return Container(
-                                  padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                  child: 
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text('AI indexing',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Color(0xFFEDEDED),
-                                              //fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(width: 130),
-                                          TextButton(
-                                            onPressed: () {
-                                              print('TextButton Clicked');
-                                            },
-                                            child: Text('Company', style: TextStyle(fontSize: 16, color: Color(0xFF797979)),
-                                            ),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              print('TextButton Clicked');
-                                            },
-                                            child: Text('News', style: TextStyle(fontSize: 16, color: Color(0xFF797979)),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                            );
+                            padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'AI분석Point',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFFEDEDED),
+                                    //fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(width: 130),
+                                TextButton(
+                                  onPressed: () {
+                                    print('TextButton Clicked');
+                                  },
+                                  child: Text(
+                                    'Company',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Color(0xFF797979)),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    print('TextButton Clicked');
+                                  },
+                                  child: Text(
+                                    'News',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Color(0xFF797979)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
                         }
                         // AI분석 포인트 리스트 구성
                         if (index == 1) {
                           return Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                    height: 200,
-                                    width: MediaQuery.of(context).size.width * 0.92,
-                                    decoration: BoxDecoration(
-                                      color: Color.fromARGB(255, 0, 0, 0),
-                                      borderRadius: BorderRadius.circular(10),
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                height: 150,
+                                width: MediaQuery.of(context).size.width * 0.92,
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  //column children left 위치 정렬
+                                  //padding left 15
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // 인덱싱 포인트 레이어 구성 (기업회사 | 뉴스)
+                                    SizedBox(
+                                      height: 150,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.99,
+                                      //chart(home_chart) widget 호출 ticker변수 전달
+                                      //child: AnalysisCrawlJson(ticker: selectedMenu),
+                                      child: AnalysisPointList(
+                                          ticker: selectedMenu),
                                     ),
-                                    child: Column(
-                                      //column children left 위치 정렬
-                                      //padding left 15
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        // 인덱싱 포인트 레이어 구성 (기업회사 | 뉴스)
-                                        SizedBox(
-                                          height: 200,
-                                          width: MediaQuery.of(context).size.width * 0.99,
-                                          //chart(home_chart) widget 호출 ticker변수 전달
-                                          child: AnalysisCrawlJson(ticker: selectedMenu),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
+                              ),
+                            ],
                           );
                         }
-                        
+
                         // SUB layer-02 (시세)
                         if (index == 2) {
                           return Container(
-                                  padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
-                                  child: 
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text('시세',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Color(0xFFEDEDED),
-                                              //fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                            );
+                            padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '시세',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFFEDEDED),
+                                    //fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
                         }
-                        
+
                         // 시세 chart 구성
                         if (index == 3) {
                           return Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                    height: 160,
-                                    width: MediaQuery.of(context).size.width * 0.92,
-                                    decoration: BoxDecoration(
-                                      color: Color.fromARGB(255, 0, 0, 0),
-                                      borderRadius: BorderRadius.circular(10),
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                height: 160,
+                                width: MediaQuery.of(context).size.width * 0.92,
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  //column children left 위치 정렬
+                                  //padding left 15
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // 인덱싱 포인트 레이어 구성 (기업회사 | 뉴스)
+                                    SizedBox(
+                                      height: 160,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.99,
+                                      //chart(home_chart) widget 호출 ticker변수 전달
+                                      child: AnalysisItemChart(
+                                          ticker: selectedMenu),
                                     ),
-                                    child: Column(
-                                      //column children left 위치 정렬
-                                      //padding left 15
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        // 인덱싱 포인트 레이어 구성 (기업회사 | 뉴스)
-                                        SizedBox(
-                                          height: 160,
-                                          width: MediaQuery.of(context).size.width * 0.99,
-                                          //chart(home_chart) widget 호출 ticker변수 전달
-                                          child: AnalysisItemChart(ticker: selectedMenu),
-                                        ),
-                                      ],
-                                    ),    
-                                  ),
-                                ],
-                          );  
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
                         }
 
                         // SUB layer-02 (등락률)
                         if (index == 4) {
                           return Container(
-                                  padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
-                                  child: 
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text('등락률',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Color(0xFFEDEDED),
-                                              //fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                            );
+                            padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '등락률',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFFEDEDED),
+                                    //fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
                         }
-                        
+
                         // 등락률 chart 구성
                         if (index == 5) {
                           return Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                    height: 160,
-                                    width: MediaQuery.of(context).size.width * 0.92,
-                                    decoration: BoxDecoration(
-                                      color: Color.fromARGB(255, 0, 0, 0),
-                                      borderRadius: BorderRadius.circular(10),
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                height: 160,
+                                width: MediaQuery.of(context).size.width * 0.92,
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  //column children left 위치 정렬
+                                  //padding left 15
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // 인덱싱 포인트 레이어 구성 (기업회사 | 뉴스)
+                                    SizedBox(
+                                      height: 160,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.99,
+                                      //chart(home_chart) widget 호출 ticker변수 전달
+                                      child: AnalysisItemChart(
+                                          ticker: selectedMenu),
                                     ),
-                                    child: Column(
-                                      //column children left 위치 정렬
-                                      //padding left 15
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        // 인덱싱 포인트 레이어 구성 (기업회사 | 뉴스)
-                                        SizedBox(
-                                          height: 160,
-                                          width: MediaQuery.of(context).size.width * 0.99,
-                                          //chart(home_chart) widget 호출 ticker변수 전달
-                                          child: AnalysisItemChart(ticker: selectedMenu),
-                                        ),
-                                      ],
-                                    ),    
-                                  ),
-                                ],
-                          );  
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
                         }
-                                                
                       },
                       childCount: 10,
                     ),
@@ -289,8 +300,6 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
           ),
         ],
       ),
-      
-      
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -322,4 +331,3 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     );
   }
 }
-
