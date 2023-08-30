@@ -1,20 +1,17 @@
 import 'dart:convert';
 
+import 'package:fss_ai_app2/config/set_const.dart';
+import 'package:fss_ai_app2/models/history_model.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/history_model.dart';
-
 class HistoryProviders {
-  // static const baseUrl = 'https://www.fssai.kr/api/history';
-  // static const baseUrl = 'http://10.21.1.61:8000/api/history';
-  static const baseUrl = 'http://192.168.200.179:8000/api/history';
-  // static const baseUrl = 'http://192.168.200.154:8000/api/history';
+  static const baseUrl = SetConfigInfo.baseUrl;
 
   // 추천종목 이력 리스트
   Future<List<HistoryDailyRateList>> getHistoryDailyRateList() async {
     List<HistoryDailyRateList> pTDHistoryList = [];
     final response = await http.get(
-      Uri.parse('$baseUrl/HistoryDailyRateList?code=H001'),
+      Uri.parse('$baseUrl/history/HistoryDailyRateList?code=H001'),
     );
     if (response.statusCode == 200) {
       pTDHistoryList =
@@ -24,4 +21,20 @@ class HistoryProviders {
     }
     return pTDHistoryList;
   }
+
+    // 추천종목 이력 리스트
+  Future<List<SearchTickerNameList>> getSearchTickerNameList() async {
+    List<SearchTickerNameList> pTDSearchList = [];
+    final response = await http.get(
+      Uri.parse('$baseUrl/history/SearchTickerNameList?ticker=&name='),
+    );
+    if (response.statusCode == 200) {
+      pTDSearchList =
+          jsonDecode(response.body).map<SearchTickerNameList>((histlistmap) {
+        return SearchTickerNameList.fromMap(histlistmap);
+      }).toList();
+    }
+    return pTDSearchList;
+  }
+  
 }

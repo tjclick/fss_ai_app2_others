@@ -1,16 +1,29 @@
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
+import 'firebase_options.dart';
+import 'modules/history/ticker_hist_detail.dart';
+import 'modules/history/search_list_view.dart';
+import 'modules/login/models/model_auth.dart';
+import 'modules/login/screens/screen_login.dart';
+import 'modules/login/screens/screen_register.dart';
+import 'modules/login/screens/screen_splash.dart';
+import 'modules/login/screens/user_profile.dart';
 import 'screens/AnalysisScreen.dart';
+import 'screens/HistoryScreen.dart';
 import 'screens/HomeScreen.dart';
 import 'screens/NewsScreen.dart';
-import 'screens/HistoryScreen.dart';
 
-void main() {
+void main() async {
   HttpOverrides.global = NoCheckCertificateHttpOverrides();
-
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -20,7 +33,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => FirebaseAuthProvider()),
+      ],
+      child: GetMaterialApp(
       title: 'GOOD.AI',
       theme: ThemeData(
         useMaterial3: true,
@@ -38,7 +55,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       themeMode: ThemeMode.system,
-      initialRoute: "/",
+      initialRoute: "/splash",
       getPages: [
         // # DEMO
         GetPage(name: "/", page: () => HomeScreen()),
@@ -46,11 +63,23 @@ class MyApp extends StatelessWidget {
         GetPage(name: "/analysis", page: () => AnalysisScreen()),
         GetPage(name: "/news", page: () => NewsScreen()),
         GetPage(name: "/history", page: () => HistoryScreen()),
+        GetPage(name: "/historyDetail", page: () => HistoryDetailView()),
+        GetPage(name: "/users", page: () => UserProfile()),
+
+        // Main-Sub Screen
+        GetPage(name: "/historyDetail", page: () => HistoryDetailView()),
+        GetPage(name: "/historySearch", page: () => SearchListView()),
+
+        // # Login
+        GetPage(name: "/login", page: () => LoginScreen()),
+        GetPage(name: "/splash", page: () => SplashScreen()),
+        GetPage(name: "/register", page: () => RegisterScreen()),
 
         // # API Test
         //GetPage(name: "/para/:ID4", page: () => PageParaApp()),
       ],
       //home: HomeScreen(),
+    ),
     );
   }
 }
